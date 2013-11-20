@@ -6043,14 +6043,18 @@ button.close {
 }
 
 .modal-backdrop.in {
-  opacity: 0.5;
-  filter: alpha(opacity=50);
+  opacity: .7;
+  filter: alpha(opacity=75);
 }
 
 .modal-header {
   min-height: 16.428571429px;
   padding: 15px;
   border-bottom: 1px solid #e5e5e5;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  background-color: #ffffff
+  
 }
 
 .modal-header .close {
@@ -6060,18 +6064,23 @@ button.close {
 .modal-title {
   margin: 0;
   line-height: 1.428571429;
+  
 }
 
 .modal-body {
   position: relative;
   padding: 20px;
+  background-color: #ffffff
 }
 
 .modal-footer {
   padding: 19px 20px 20px;
-  margin-top: 15px;
+  margin-top: 0px;
   text-align: right;
   border-top: 1px solid #e5e5e5;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-color: #ffffff
 }
 
 .modal-footer:before,
