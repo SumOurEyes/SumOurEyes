@@ -149,7 +149,7 @@
         <div class="modal fade" id="shareproject" role="dialog">
             <div class = "modal-dialog">
                 <div class= "modal-header">
-                    <h3><strong>Share Project</strong></h3>
+                    <h3>Share Project: </h3>
                 </div>
                 <div class = "modal-body">
                     <table>
@@ -186,7 +186,7 @@
 
     </div> <!-- /container -->
     <footer>
-          <p>&copy; SumOurEyes 2013 | Contact</p>
+          <p>&copy; SumOurEyes 2013 | <a href="">Contact</a></p>
         </footer>
     <script src="bootstrap/dist/js/bootstrap.min.js"></script>
 
