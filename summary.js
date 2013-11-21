@@ -108,6 +108,7 @@ $(document).ready(function() {
                             if (matches!=null){
                               for(i = 0; i <= (matches.length - 1); i++) {
                                 var str = matches[i];
+                                alert(str);
                                 $.post("addKeyword.php",{
                                        word: str.substring(1, str.length - 1), noteid: id, chapterid: chapid, projectid: getUrlVars()["projectid"]
                                 });
@@ -147,6 +148,9 @@ $(document).ready(function() {
                 $.post("deleteKeyword.php", {noteid: noteid});
             }
             function init(projectid){
+                
+                dbkeywords = getKeywords(); //Save the array of project keywords
+
                 $.post("getChapters.php", {projectid: projectid}, function(data){ //Get all initial notes and chapters
                     
                     var chapters = jQuery.parseJSON(data);
@@ -163,18 +167,45 @@ $(document).ready(function() {
                     
                 });
 
-                getKeywords();
+                
                 //How to select the first tab?
             }
             
-            function getKeywords(){ //Get all keywords from the project
-                $.post("getKeywords.php", {projectid: getUrlVars()["projectid"]}, function(data){
-                    console.log(data);
-                    // var keywords = jQuery.parseJSON(data);
-                    // $.each(keywords, function(i, keyword){
-                    //     console.log(keyword);
-                    // });
+            function getKeywords(){ //Get all keywords from the current project
+                data = $.ajax({
+                  type: "POST",
+                  url: "getKeywords.php",
+                  data: {projectid: getUrlVars()["projectid"]},
+                  async: false
+                }).responseText;
+
+                var keywords = jQuery.parseJSON(data);
+                return keywords; //Return them as a javascript object
+                  
+            }
+
+            function attachReferers(content){ //Check whether this note has words that should be referers and attach referers
+                words = content.split(" ");
+                
+                for(i = 0; i < words.length; i++){ //for every word in the note
+                    
+                    $.each(dbkeywords, function(j, keyword){ //for every keyword in this project
+                        
+                        if(words[i] === keyword.word){ //if a word in the note exists in the keywords of this project
+                            content = content.replace(words[i], "<a href='#' class='referer' onClick='createReferer("+keyword.noteid+")'>"+words[i]+"</a>");
+                        }
+                    });
+                    
+                }
+                return content; // return content;
+                
+            }
+
+            function createReferer(noteid){ //Create a refering link to a keyword's note
+                $.post("getNote.php", {noteid: noteid}, function(data){
+                    alert(data);
                 });
+                
             }
 
             function appendChapter(id, name){
@@ -193,12 +224,14 @@ $(document).ready(function() {
                 //2. Search document for any words that might be keywords
                 //3. Change text of matching words to highlighted
                 
+                content = attachReferers(content);
+
                 // Replace any tagged '**' words with highlight
                 content = content.replace(/\#(.*?)\#/g,"<mark>$1</mark>");
                 
                  // Replace any tagged '[]' words with bold
                 content = content.replace(/\[(.*?)\]/g,"<strong>$1</strong>");
-                
+
                 var newnote = "<div class='note' id='note"+id+"' onMouseOver='showNoteControls("+id+")' onMouseOut='hideNoteControls("+id+")'><p class='notetext' id='notetext"+id+"' contenteditable='true'>"+content+"</p><div class='notecontrols' id='notecontrols"+id+"'><a href='#' onclick='deleteNote("+id+");return false;'><img src='https://cdn1.iconfinder.com/data/icons/aspneticons_v1.0_Nov2006/trash_(delete)_16x16.gif' /></a></div></div>";
                 $("#notes" + chapterid).append(newnote);
                 
