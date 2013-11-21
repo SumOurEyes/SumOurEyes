@@ -105,3 +105,8 @@ textarea.newnote{
     width: 400px;
     height: 100px;
 }
+
+a{
+    cursor: pointer;
+    text-decoration: underline;
+}
