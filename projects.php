@@ -58,6 +58,8 @@
         $(".shareInitialize").click(function(event){
             event.preventDefault();
             sharedProjectId = this.id;
+            sharedProjectName = document.getElementById("project" + sharedProjectId).innerHTML;
+            document.getElementById('shareModalHeader').innerHTML = '<h3>' + "Share \'" + sharedProjectName + '\'</h3>';
         });
         
         // Handles the "Share" modal button being clicked
@@ -75,8 +77,12 @@
                try{ 
                    var sharedUserIDs = jQuery.parseJSON(data);
                     $.each(sharedUserIDs, function(i, sharedUser){
-                        
-                        shareProject(sharedUser.id, sharedProjectId, selected_perm);
+                        if(sharedUser.id == $("#userid").val()) {
+                            alert("Cannot share project with yourself! Please try again");   
+                        }
+                        else {
+                            shareProject(sharedUser.id, sharedProjectId, selected_perm);
+                        }
                     });
                   }
                 catch(e){alert(e);}
@@ -152,32 +158,30 @@
     <!-- Alex code below!-->
         <div class="modal fade" id="shareproject" role="dialog">
             <div class = "modal-dialog">
-                <div class= "modal-header">
+                <div class= "modal-header" id="shareModalHeader">
                     <h3>Share Project: </h3>
                 </div>
                 <div class = "modal-body">
-                    <table>
-                        <tr>
-                            <td>
-                                <p class="form-control-static">Email of User to Share with: </p>
-                            </td>
-                            <td>
-                                <input type="text" id="shareduser_box" class="form-control"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                               <p class="form-control-static">User Permissions:</p>
-                            </td>
-                            <td>
+                    
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="shareduser_box" style="text-align:left" class="col-sm-4 control-label">Share With: </label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control" id="shareduser_box" placeholder="Email">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="permissions_ddl" style="text-align:left" class="col-sm-4 control-label">User Permissions: </label>
+                            <div class="col-sm-8">
                                 <select id="permissions_ddl" class="form-control input-sm">
-                                    <option value="edit">Edit</option>
-                                    <option value="read">Read Only</option>
-                                    <option value="comment">Comment</option>
+                                        <option value="edit">Edit</option>
+                                        <option value="read">Read Only</option>
+                                        <option value="comment">Comment</option>
                                 </select>
-                            </td>
-                        </tr>
-                    </table>
+                            </div>
+                        </div>
+                    </form>
+                
                 </div>
                 <div class = "modal-footer">
                     <a href="#" id = "shareProjectBtn" class="btn btn-success" data-dismiss="modal" data-target="#shareproject" name="shareproject">
