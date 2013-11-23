@@ -34,6 +34,29 @@
         });
         
         //ALEX CODE BELOW////////////////--------------------------------------
+       
+        var currentProjectId = "";               // used to store the projectid of the project to be shared/renamed
+        
+        // Update the database with new user given name
+        function renameProject(projectid, newName) {
+            $.post('renameProject.php', {project:projectid, newName:newName}, function() {
+            });
+            
+        }
+        
+        // Handles the "Confirm" Rename Modal Button being clicked
+        $(document.getElementById("confirmRenameProjectBtn")).click(function(event){
+            event.preventDefault();
+            var newName = document.getElementById('renameproj_box').value;
+            if(newName != ''){
+                renameProject(currentProjectId, newName);
+                document.getElementById('project' + currentProjectId).innerHTML = newName;
+            }
+            else {
+                alert("value must not be null");   
+            }
+        });
+            
         function deleteSharedProject(projectid) {
             $.post('deleteSharedProject.php', {project: projectid, user:$("#userid").val()}, function() {
                 $("#sharedproject"+projectid).remove();
@@ -50,16 +73,14 @@
              $.post("shareProject.php", {user: sharedUserId, project: projectId, permissions: permissions}, function(){
              });
         }
-        
-        
-        var sharedProjectId = "";               // used to store the projectid of the project to be shared
        
-        // Used to grab project id when "Share" link is initially clicked
-        $(".shareInitialize").click(function(event){
+        // Used to grab project id and info when a link that opens a modal is clicked
+        $(".modalInitialize").click(function(event){
             event.preventDefault();
-            sharedProjectId = this.id;
-            sharedProjectName = document.getElementById("project" + sharedProjectId).innerHTML;
-            document.getElementById('shareModalHeader').innerHTML = '<h3>' + "Share \'" + sharedProjectName + '\'</h3>';
+            currentProjectId = this.id;
+            projectName = document.getElementById("project" + currentProjectId).innerHTML;
+            document.getElementById('shareModalHeader').innerHTML = '<h3>' + "Share \'" + projectName + '\'</h3>';
+            document.getElementById('renameModalHeader').innerHTML = '<h3>' + "Rename \'" + projectName + '\'</h3>';
         });
         
         // Handles the "Share" modal button being clicked
@@ -110,8 +131,9 @@
                             '<li class="dropdown">
                                 <a href="project.php?projectid='.$row['id'].'" id="project'.$row['id'].'" class="dropdown-toggle" data-                                     toggle="dropdown" data-hover="dropdown" data-delay="250" data-close-others="true">'.$row['name'].'</a> 
                                  <ul class="dropdown-menu pull-right">
-                                    <li><a tabindex="-1" href="#shareproject" class="shareInitialize" data-toggle="modal"                                                           id="'.$row['id'].'">Share</a></li>
+                                    <li><a tabindex="-1" href="#shareproject" class="modalInitialize" data-toggle="modal"                                                           id="'.$row['id'].'">Share</a></li>
                                     <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#renameproject" class="modalInitialize" data-toggle="modal"                                                            id="'.$row['id'].'">Rename</a></li>
                                     <li><a tabindex="-1" href="#" class="deleteproject" id="'.$row['id'].'" >Delete</a></li>
                                 </ul>    
                              </li>';
@@ -156,6 +178,30 @@
         </div>
 		
     <!-- Alex code below!-->
+        <!--Rename Project Modal!-->
+        <div class="modal fade" id="renameproject" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-header" id="renameModalHeader" role="dialog">
+                    <h3>Rename Project: </h3>
+                </div>
+                <div class= "modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="renameproj_box" style="text-align:left" class="col-sm-4 control-label">Rename To: </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="renameproj_box" placeholder="New Project Name">    
+                        </div>
+                        </div>    
+                    </form>
+                </div>
+                 <div class = "modal-footer">
+                      <a href="#" id = "cancelRenameProjectBtn" class="btn btn-default" data-dismiss="modal" data-target="#renameproject"                                 name="renameproject">Cancel</a>                 
+                    <a href="#" id = "confirmRenameProjectBtn" class="btn btn-success" data-dismiss="modal" data-target="#renameproject"                                 name="renameproject">Confirm</a>
+                </div>
+            </div>
+        </div>
+
+        <!--Share Project Modal!-->
         <div class="modal fade" id="shareproject" role="dialog">
             <div class = "modal-dialog">
                 <div class= "modal-header" id="shareModalHeader">
