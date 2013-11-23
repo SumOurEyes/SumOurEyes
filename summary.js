@@ -79,6 +79,7 @@ $(document).ready(function() {
                 //
                 // TODO: Add the note to the database, and instead make attempted keyword a referer
                 $.post("getKeywords.php", function(data){
+                    console.log(data);
                     var keywords = jQuery.parseJSON(data);
                     var matchedKeywords = new Array();
                     $.each(keywords, function(i, keyword){
@@ -184,7 +185,7 @@ $(document).ready(function() {
                   
             }
 
-            function attachReferers(content){ //Check whether this note has words that should be referers and attach referers
+            function attachReferers(originid, content){ //Check whether this note has words that should be referers and attach referers
                 words = content.split(" ");
                 
                 for(i = 0; i < words.length; i++){ //for every word in the note
@@ -192,7 +193,8 @@ $(document).ready(function() {
                     $.each(dbkeywords, function(j, keyword){ //for every keyword in this project
                         
                         if(words[i] === keyword.word){ //if a word in the note exists in the keywords of this project
-                            content = content.replace(words[i], "<a href='#' class='referer' onClick='createReferer("+keyword.noteid+")'>"+words[i]+"</a>");
+                            content = content.replace(words[i], "<a href='#' class='referer' onClick='createReferer("+originid+", "+keyword.noteid+")'>"+words[i]+"</a>");
+                            console.log(content);
                         }
                     });
                     
@@ -201,11 +203,16 @@ $(document).ready(function() {
                 
             }
 
-            function createReferer(noteid){ //Create a refering link to a keyword's note
+            function createReferer(originid, noteid){ //Create a refering link to a keyword's note
                 $.post("getNote.php", {noteid: noteid}, function(data){
-                    alert(data);
+                    
+                    $("#note"+originid).after("<div class='referredNote' id='referredNote"+originid+"'>"+data+" <a href='#' onClick='deleteReferredNote("+originid+")' class='deleteReferredNote'>x</a></div>");
                 });
                 
+            }
+
+            function deleteReferredNote(originid){
+                $("div#referredNote"+originid).remove();
             }
 
             function appendChapter(id, name){
@@ -224,13 +231,16 @@ $(document).ready(function() {
                 //2. Search document for any words that might be keywords
                 //3. Change text of matching words to highlighted
                 
-                content = attachReferers(content);
+                content = attachReferers(id, content);
 
                 // Replace any tagged '**' words with highlight
                 content = content.replace(/\#(.*?)\#/g,"<mark>$1</mark>");
                 
                  // Replace any tagged '[]' words with bold
                 content = content.replace(/\[(.*?)\]/g,"<strong>$1</strong>");
+
+                //Create line breaks
+                content = nl2br(content);
 
                 var newnote = "<div class='note' id='note"+id+"' onMouseOver='showNoteControls("+id+")' onMouseOut='hideNoteControls("+id+")'><p class='notetext' id='notetext"+id+"' contenteditable='true'>"+content+"</p><div class='notecontrols' id='notecontrols"+id+"'><a href='#' onclick='deleteNote("+id+");return false;'><img src='https://cdn1.iconfinder.com/data/icons/aspneticons_v1.0_Nov2006/trash_(delete)_16x16.gif' /></a></div></div>";
                 $("#notes" + chapterid).append(newnote);
@@ -261,3 +271,15 @@ $(document).ready(function() {
             function hideChapterControls(id){
                 $('#chaptercontrols'+id).css('visibility','hidden');
             }
+
+            function nl2br (str, is_xhtml) {
+  // *     example 1: nl2br('Kevin\nvan\nZonneveld');
+  // *     returns 1: 'Kevin<br />\nvan<br />\nZonneveld'
+  // *     example 2: nl2br("\nOne\nTwo\n\nThree\n", false);
+  // *     returns 2: '<br>\nOne<br>\nTwo<br>\n<br>\nThree<br>\n'
+  // *     example 3: nl2br("\nOne\nTwo\n\nThree\n", true);
+  // *     returns 3: '<br />\nOne<br />\nTwo<br />\n<br />\nThree<br />\n'
+  var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
+
+  return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+}

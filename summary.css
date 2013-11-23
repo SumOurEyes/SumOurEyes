@@ -106,7 +106,18 @@ textarea.newnote{
     height: 100px;
 }
 
-a{
+a.referer{
     cursor: pointer;
     text-decoration: underline;
+}
+
+div.referredNote{
+    margin-left: 30px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-left: 1px solid orange;
+}
+
+a.deleteReferredNote{
+    float: right;
 }
