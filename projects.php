@@ -100,10 +100,15 @@
 				{
 					while($row = mysql_fetch_array( $result )) 
 					{	
-						echo '<a href="project.php?projectid='.$row['id'].'" id="project'.$row['id'].'">'.$row['name'].'</a> 
-            <a href="#" class="deleteproject" id="'.$row['id'].'" ><img src="https://cdn1.iconfinder.com/data/icons/aspneticons_v1.0_Nov2006/trash_(delete)_16x16.gif" /></a>
-            <a href="#shareproject" class="shareInitialize" data-toggle="modal" id="'.$row['id'].'">Share</a>
-            <br />';
+						echo 
+                            '<li class="dropdown">
+                                <a href="project.php?projectid='.$row['id'].'" id="project'.$row['id'].'" class="dropdown-toggle" data-                                     toggle="dropdown" data-hover="dropdown" data-delay="250" data-close-others="true">'.$row['name'].'</a> 
+                                 <ul class="dropdown-menu pull-right">
+                                    <li><a tabindex="-1" href="#shareproject" class="shareInitialize" data-toggle="modal"                                                           id="'.$row['id'].'">Share</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#" class="deleteproject" id="'.$row['id'].'" >Delete</a></li>
+                                </ul>    
+                             </li>';
 					}
 				}else{
 					echo "Ain't got no projects yet...";
@@ -124,8 +129,7 @@
 					while($row = mysql_fetch_array( $result )) 
 					{	
 						echo '<a href="project.php?projectid='.$row['id'].'" id="sharedproject'.$row['id'].'">'.$row['name'].'</a> 
-            <a href="#" class="deletesharedproject" id="'.$row['id'].'" ><img src="https://cdn1.iconfinder.com/data/icons/aspneticons_v1.0_Nov2006/trash_(delete)_16x16.gif" /></a>
-            <br />';
+                              <a href="#" class="deletesharedproject" id="'.$row['id'].'" ><img src="https://cdn1.iconfinder.com/data/icons/aspneticons_v1.0_Nov2006/trash_(delete)_16x16.gif" /></a>';
 					}
 				}else{
 					echo "Ain't got no shared projects yet...";
@@ -189,6 +193,7 @@
           <p>&copy; SumOurEyes 2013 | <a href="">Contact</a></p>
         </footer>
     <script src="bootstrap/dist/js/bootstrap.min.js"></script>
-
+    <script src="jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="twitter-bootstrap-hover-dropdown-master/twitter-bootstrap-hover-dropdown.min.js"></script>
 	</body>
 </html>

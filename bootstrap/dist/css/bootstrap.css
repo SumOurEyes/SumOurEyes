@@ -3468,6 +3468,7 @@ input[type="button"].btn-block {
 
 .dropdown {
   position: relative;
+ list-style-type:none;    
 }
 
 .dropdown-toggle:focus {
