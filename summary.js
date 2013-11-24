@@ -116,7 +116,7 @@ $(document).ready(function() {
                                     //Add keywords to array.
                                     
                                     var element = {};
-                                    element.id = id;
+                                    element.noteid = id;
                                     element.word = str.substring(1, str.length - 1);
 
                                     dbkeywords.push(element);
