@@ -80,6 +80,11 @@ div.container.content{
   text-align: center;
 }
 
+div.container.content.left{
+  margin-top: 4em;
+  text-align: left;
+}
+
 li#username-item{
   color: #fff;
   margin-left: 20px;
